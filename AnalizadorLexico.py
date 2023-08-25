@@ -1,11 +1,29 @@
 class Type:
     ERROR = -1
     IDENTIFICADOR = 0
-    SUMA = 1
-    MULT = 2
-    PESOS = 3
-    ENTERO = 4
-    REAL = 5
+    ENTERO = 1
+    REAL = 2
+    CADENA = 3
+    TIPO = 4
+    SUMA = 5
+    MULT = 6
+    RELAC = 7
+    OR = 8
+    AND = 9
+    NOT = 10
+    IGUALDAD = 11
+    PUNTO_Y_COMA = 12
+    COMA = 13
+    PARENTESIS_ABRIR = 14
+    PARENTESIS_CERRAR = 15
+    LLAVE_ABRIR = 16
+    LLAVE_CERRAR = 17
+    ASIGNACION = 18
+    CONDICIONAL = 19
+    BUCLE = 20
+    RETURN = 21
+    CONDICIONAL_ELSE = 22
+    PESOS = 23
 
 
 class Lexico(object):
@@ -16,7 +34,7 @@ class Lexico(object):
         self.__c = ''
         self.__estado = 0
 
-        self.simbolo = ""
+        self.token = ""
         self.tipo = 0
 
     def __sigCaracter(self):
@@ -28,10 +46,9 @@ class Lexico(object):
 
     def __sigEstado(self, estado):
         self.__estado = estado
-        self.simbolo += self.__c
+        self.token += self.__c
 
     def __aceptacion(self, estado):
-        self.__sigEstado(estado)
         self.__continua = False
 
     def __esLetra(self, c):
@@ -73,15 +90,63 @@ class Lexico(object):
         elif self.tipo == Type.REAL:
             cad = "Real"
 
+        elif self.tipo == Type.TIPO:
+            cad = "Tipo"
+
+        elif self.tipo == Type.RELAC:
+            cad = "Relacion"
+
+        elif self.tipo == Type.OR:
+            cad = "Compuerta OR"
+
+        elif self.tipo == Type.AND:
+            cad = "Compuerta AND"
+
+        elif self.tipo == Type.NOT:
+            cad = "Compuerta NOT"
+
+        elif self.tipo == Type.IGUALDAD:
+            cad = "Igualdad"
+
+        elif self.tipo == Type.PUNTO_Y_COMA:
+            cad = "Punto y coma"
+
+        elif self.tipo == Type.COMA:
+            cad = "Coma"
+
+        elif self.tipo == Type.PARENTESIS_ABRIR:
+            cad = "Parentesis abrir"
+
+        elif self.tipo == Type.PARENTESIS_CERRAR:
+            cad = "Parentesis cerrar"
+
+        elif self.tipo == Type.LLAVE_ABRIR:
+            cad = "llave abrir"
+
+        elif self.tipo == Type.LLAVE_CERRAR:
+            cad = "llave cerrar"
+
+        elif self.tipo == Type.CONDICIONAL:
+            cad = "Condicional"
+
+        elif self.tipo == Type.BUCLE:
+            cad = "Bucle"
+
+        elif self.tipo == Type.CONDICIONAL_ELSE:
+            cad = "Condicional Else"
+
+        elif self.tipo == Type.RETURN:
+            cad = "Regresa"
+
         elif self.tipo == Type.ERROR:
             cad = "Error en el token"
 
         return cad
 
-    def sigSimbolo(self):
+    def sigtoken(self):
         self.__estado = 0
         self.__continua = True
-        self.simbolo = ""
+        self.token = ""
 
         while(self.__continua):
             self.__c = self.__sigCaracter()
@@ -92,41 +157,102 @@ class Lexico(object):
                 elif self.__esDigito(self.__c):
                     self.__sigEstado(3)
                 else:
-                    self.__continua = False
+                    self.__sigEstado(5)
+
             elif self.__estado == 1:
-                if self.__esLetra(self.__c) or self.__esDigito(self.__c):
+                if self.__esLetra(self.__c):
                     self.__sigEstado(1)
-                elif self.__c == "*":
-                    self.__aceptacion(2)
+                elif self.__esDigito(self.__c):
+                    self.__sigEstado(2)
                 else:
-                    self.__continua = False
+                    self.__aceptacion(1)
+
+            elif self.__estado == 2:
+                if self.__esLetra(self.__c) or self.__esDigito(self.__c):
+                    self.__sigEstado(2)
+                else:
+                    self.__aceptacion(2)
             elif self.__estado == 3:
                 if self.__esDigito(self.__c):
                     self.__sigEstado(3)
                 elif self.__c == ".":
                     self.__sigEstado(4)
                 else:
-                    self.__continua = False
+                    self.__aceptacion(3)
             elif self.__estado == 4:
                 if self.__esDigito(self.__c):
                     self.__sigEstado(4)
-                elif self.__c == "+":
-                    self.__aceptacion(5)
                 else:
-                    self.__continua = False
+                    self.__aceptacion(4)
+            elif self.__estado == 5:
+                if self.__esDigito(self.__c) == False and self.__esLetra(self.__c) and self.__esEspacio(self.__c):
+                    self.__sigEstado(6)
+                else:
+                    self.__aceptacion(5)
+            elif self.__estado == 6:
+                self.__aceptacion(6)
 
-        if self.__estado == 5:
-            self.tipo = Type.REAL
+        if self.__estado == 1:
+            self.evaluatePalabra(self.token)
         elif self.__estado == 2:
             self.tipo = Type.IDENTIFICADOR
-        elif self.__estado == 0:
-            self.tipo = Type.PESOS
-            self.simbolo = self.__c
+        elif self.__estado == 3:
+            self.tipo = Type.ENTERO
+        elif self.__estado == 4:
+            self.tipo = Type.REAL
+        elif self.__estado == 5 or self.__estado == 6:
+            self.evaluateSignos(self.token)
         else:
-            self.simbolo += self.__c
+            self.token += self.__c
             self.tipo = Type.ERROR
 
         return self.tipo
+
+    def evaluatePalabra(self, token):
+        if token == "if":
+            self.tipo = Type.CONDICIONAL
+        elif token == "while":
+            self.tipo = Type.BUCLE
+        elif token == "return":
+            self.tipo = Type.RETURN
+        elif token == "else":
+            self.tipo = Type.CONDICIONAL_ELSE
+        elif token == "int" or token == "float" or token == "void":
+            self.tipo = Type.TIPO
+        else:
+            self.tipo = Type.IDENTIFICADOR
+
+    def evaluateSignos(self, token):
+        if token == "+" or token == "-":
+            self.tipo = Type.SUMA
+        elif token == "*" or token == "/":
+            self.tipo = Type.MULT
+        elif token == "<" or token == ">" or token == "<=" or token == ">=":
+            self.tipo = Type.RELAC
+        elif token == "||":
+            self.tipo = Type.OR
+        elif token == "&&":
+            self.tipo = Type.AND
+        elif token == "!":
+            self.tipo = Type.NOT
+        elif token == "=":
+            self.tipo = Type.ASIGNACION
+        elif token == "(":
+            self.tipo = Type.PARENTESIS_ABRIR
+        elif token == ")":
+            self.tipo = Type.PARENTESIS_CERRAR
+        elif token == "{":
+            self.tipo = Type.LLAVE_ABRIR
+        elif token == "}":
+            self.tipo = Type.LLAVE_CERRAR
+        elif token == ";":
+            self.tipo = Type.PUNTO_Y_COMA
+        elif token == ",":
+            self.tipo = Type.COMA
+        elif token == token == "==" or token == "!=":
+            self.tipo = Type.IGUALDAD
+        else:
+            self.tipo = Type.ERROR
 
     def terminado(self):
         return self.__ind >= len(self.__fuente)-1
