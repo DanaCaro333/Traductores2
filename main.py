@@ -1,13 +1,9 @@
-import AnalizadorLexico
+import AnalizadorSintactico
 
-prueba = AnalizadorLexico.Lexico()
-prueba.entrada("a23*2.0+234*")
+prueba = AnalizadorSintactico.Lexico()
+prueba.entrada("a+asd+kgf")
 
 print("Resultado del analisis lexico\n\n")
 
-while(prueba.simbolo != "$"):
-    prueba.sigSimbolo()
-    if(prueba.simbolo != "$"):
-        print(prueba.simbolo+"\t\t"+prueba.tipoAcad(prueba.tipo)+"\n")
-    else:
-        print(prueba.tipoAcad(prueba.tipo)+"\n")
+
+print(prueba.__resultado)

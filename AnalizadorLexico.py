@@ -17,10 +17,12 @@ class Lexico(object):
         self.__estado = 0
 
         self.simbolo = ""
+        self.cadena = ""
         self.tipo = 0
 
     def __sigCaracter(self):
         if self.terminado():
+            self.__ind = self.__ind + 1
             return '$'
         else:
             self.__ind = self.__ind + 1
@@ -30,8 +32,8 @@ class Lexico(object):
         self.__estado = estado
         self.simbolo += self.__c
 
-    def __aceptacion(self, estado):
-        self.__sigEstado(estado)
+    def __aceptacion(self):
+        self.__ind = self.__ind - 1
         self.__continua = False
 
     def __esLetra(self, c):
@@ -56,22 +58,13 @@ class Lexico(object):
         cad = ""
 
         if self.tipo == Type.IDENTIFICADOR:
-            cad = "Identificador"
-
-        elif self.tipo == Type.SUMA:
-            cad = "Suma"
-
-        elif self.tipo == Type.MULT:
-            cad = "Multiplicacion"
+            cad = "id"
 
         elif self.tipo == Type.PESOS:
             cad = "Fin de la entrada"
 
-        elif self.tipo == Type.ENTERO:
-            cad = "Entero"
-
-        elif self.tipo == Type.REAL:
-            cad = "Real"
+        elif self.tipo == Type.SUMA:
+            cad = "+"
 
         elif self.tipo == Type.ERROR:
             cad = "Error en el token"
@@ -89,36 +82,22 @@ class Lexico(object):
             if self.__estado == 0:
                 if self.__esLetra(self.__c):
                     self.__sigEstado(1)
-                elif self.__esDigito(self.__c):
+                elif self.__c == "+":
                     self.__sigEstado(3)
                 else:
                     self.__continua = False
             elif self.__estado == 1:
                 if self.__esLetra(self.__c) or self.__esDigito(self.__c):
                     self.__sigEstado(1)
-                elif self.__c == "*":
-                    self.__aceptacion(2)
                 else:
-                    self.__continua = False
+                    self.__aceptacion()
             elif self.__estado == 3:
-                if self.__esDigito(self.__c):
-                    self.__sigEstado(3)
-                elif self.__c == ".":
-                    self.__sigEstado(4)
-                else:
-                    self.__continua = False
-            elif self.__estado == 4:
-                if self.__esDigito(self.__c):
-                    self.__sigEstado(4)
-                elif self.__c == "+":
-                    self.__aceptacion(5)
-                else:
-                    self.__continua = False
+                self.__aceptacion()
 
-        if self.__estado == 5:
-            self.tipo = Type.REAL
-        elif self.__estado == 2:
+        if self.__estado == 1:
             self.tipo = Type.IDENTIFICADOR
+        elif self.__estado == 3:
+            self.tipo = Type.SUMA
         elif self.__estado == 0:
             self.tipo = Type.PESOS
             self.simbolo = self.__c
@@ -130,3 +109,10 @@ class Lexico(object):
 
     def terminado(self):
         return self.__ind >= len(self.__fuente)-1
+
+    def Cadena(self):
+        while(self.simbolo != "$"):
+            self.sigSimbolo()
+            if(self.simbolo != "$"):
+                self.cadena += self.tipoAcad(self.tipo)
+        return self.cadena
