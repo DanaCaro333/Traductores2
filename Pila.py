@@ -1,6 +1,6 @@
 class Pila(object):
     def __init__(self) -> None:
-        self.__lista = list
+        self.__lista = []
 
     def push(self, x):
         self.__lista.append(x)
@@ -13,5 +13,5 @@ class Pila(object):
 
     def muestra(self):
         for _ in self.__lista:
-            print(_)
-        print("\n")
+            print(_, end="")
+        print(" ")

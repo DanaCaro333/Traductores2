@@ -17,7 +17,7 @@ class Lexico(object):
         self.__estado = 0
 
         self.simbolo = ""
-        self.cadena = ""
+        self.cadena = []
         self.tipo = 0
 
     def __sigCaracter(self):
@@ -114,5 +114,5 @@ class Lexico(object):
         while(self.simbolo != "$"):
             self.sigSimbolo()
             if(self.simbolo != "$"):
-                self.cadena += self.tipoAcad(self.tipo)
+                self.cadena.append(self.tipoAcad(self.tipo))
         return self.cadena

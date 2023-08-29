@@ -1,9 +1,8 @@
 import AnalizadorSintactico
 
-prueba = AnalizadorSintactico.Lexico()
-prueba.entrada("a+asd+kgf")
+
+prueba = AnalizadorSintactico.Sintactico()
 
 print("Resultado del analisis lexico\n\n")
 
-
-print(prueba.__resultado)
+prueba.apilar()
