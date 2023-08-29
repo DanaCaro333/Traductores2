@@ -30,8 +30,7 @@ class Lexico(object):
         self.__estado = estado
         self.simbolo += self.__c
 
-    def __aceptacion(self, estado):
-        self.__sigEstado(estado)
+    def __aceptacion(self):
         self.__continua = False
 
     def __esLetra(self, c):
@@ -58,17 +57,8 @@ class Lexico(object):
         if self.tipo == Type.IDENTIFICADOR:
             cad = "Identificador"
 
-        elif self.tipo == Type.SUMA:
-            cad = "Suma"
-
-        elif self.tipo == Type.MULT:
-            cad = "Multiplicacion"
-
         elif self.tipo == Type.PESOS:
             cad = "Fin de la entrada"
-
-        elif self.tipo == Type.ENTERO:
-            cad = "Entero"
 
         elif self.tipo == Type.REAL:
             cad = "Real"
@@ -92,14 +82,12 @@ class Lexico(object):
                 elif self.__esDigito(self.__c):
                     self.__sigEstado(3)
                 else:
-                    self.__continua = False
+                    self.__aceptacion()
             elif self.__estado == 1:
                 if self.__esLetra(self.__c) or self.__esDigito(self.__c):
                     self.__sigEstado(1)
-                elif self.__c == "*":
-                    self.__aceptacion(2)
                 else:
-                    self.__continua = False
+                    self.__aceptacion()
             elif self.__estado == 3:
                 if self.__esDigito(self.__c):
                     self.__sigEstado(3)
@@ -110,14 +98,12 @@ class Lexico(object):
             elif self.__estado == 4:
                 if self.__esDigito(self.__c):
                     self.__sigEstado(4)
-                elif self.__c == "+":
-                    self.__aceptacion(5)
                 else:
-                    self.__continua = False
+                    self.__aceptacion()
 
-        if self.__estado == 5:
+        if self.__estado == 4:
             self.tipo = Type.REAL
-        elif self.__estado == 2:
+        elif self.__estado == 1:
             self.tipo = Type.IDENTIFICADOR
         elif self.__estado == 0:
             self.tipo = Type.PESOS
