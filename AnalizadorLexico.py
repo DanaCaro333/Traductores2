@@ -38,17 +38,18 @@ class Lexico(object):
         self.tipo = 0
 
     def __sigCaracter(self):
+        self.__ind = self.__ind + 1
         if self.terminado():
             return '$'
         else:
-            self.__ind = self.__ind + 1
             return self.__fuente[self.__ind]
 
     def __sigEstado(self, estado):
         self.__estado = estado
         self.token += self.__c
 
-    def __aceptacion(self, estado):
+    def __aceptacion(self):
+        self.__ind = self.__ind - 1
         self.__continua = False
 
     def __esLetra(self, c):
@@ -148,9 +149,13 @@ class Lexico(object):
         self.__continua = True
         self.token = ""
 
+        if(self.__esEspacio(self.__c)):
+            while(self.__esEspacio(self.__c)):
+                self.__c = self.__sigCaracter()
+            self.__ind = self.__ind - 1
+
         while(self.__continua):
             self.__c = self.__sigCaracter()
-
             if self.__estado == 0:
                 if self.__esLetra(self.__c):
                     self.__sigEstado(1)
@@ -165,32 +170,32 @@ class Lexico(object):
                 elif self.__esDigito(self.__c):
                     self.__sigEstado(2)
                 else:
-                    self.__aceptacion(1)
+                    self.__aceptacion()
 
             elif self.__estado == 2:
                 if self.__esLetra(self.__c) or self.__esDigito(self.__c):
                     self.__sigEstado(2)
                 else:
-                    self.__aceptacion(2)
+                    self.__aceptacion()
             elif self.__estado == 3:
                 if self.__esDigito(self.__c):
                     self.__sigEstado(3)
                 elif self.__c == ".":
                     self.__sigEstado(4)
                 else:
-                    self.__aceptacion(3)
+                    self.__aceptacion()
             elif self.__estado == 4:
                 if self.__esDigito(self.__c):
                     self.__sigEstado(4)
                 else:
-                    self.__aceptacion(4)
+                    self.__aceptacion()
             elif self.__estado == 5:
                 if self.__esDigito(self.__c) == False and self.__esLetra(self.__c) and self.__esEspacio(self.__c):
                     self.__sigEstado(6)
                 else:
-                    self.__aceptacion(5)
+                    self.__aceptacion()
             elif self.__estado == 6:
-                self.__aceptacion(6)
+                self.__aceptacion()
 
         if self.__estado == 1:
             self.evaluatePalabra(self.token)
