@@ -38,10 +38,11 @@ class Lexico(object):
         self.tipo = 0
 
     def __sigCaracter(self):
-        self.__ind = self.__ind + 1
         if self.terminado():
+            self.__ind = self.__ind + 1
             return '$'
         else:
+            self.__ind = self.__ind + 1
             return self.__fuente[self.__ind]
 
     def __sigEstado(self, estado):
@@ -197,7 +198,9 @@ class Lexico(object):
             elif self.__estado == 6:
                 self.__aceptacion()
 
-        if self.__estado == 1:
+        if self.token == "$":
+            self.tipo = Type.PESOS
+        elif self.__estado == 1:
             self.evaluatePalabra(self.token)
         elif self.__estado == 2:
             self.tipo = Type.IDENTIFICADOR
@@ -207,6 +210,7 @@ class Lexico(object):
             self.tipo = Type.REAL
         elif self.__estado == 5 or self.__estado == 6:
             self.evaluateSignos(self.token)
+        
         else:
             self.token += self.__c
             self.tipo = Type.ERROR
