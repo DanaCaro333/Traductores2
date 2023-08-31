@@ -60,7 +60,7 @@ class Lexico(object):
         return self.__c.isdigit()
 
     def __esEspacio(self, c):
-        return self.__c == ' ' or c == '\t'
+        return self.__c == ' ' or c == '\t' or c == '\n'
 
     def __retroceso(self):
         if self.__c != '$':
@@ -109,6 +109,9 @@ class Lexico(object):
 
         elif self.tipo == Type.IGUALDAD:
             cad = "Igualdad"
+
+        elif self.tipo == Type.ASIGNACION:
+            cad = "Asignacion"
 
         elif self.tipo == Type.PUNTO_Y_COMA:
             cad = "Punto y coma"
@@ -210,7 +213,7 @@ class Lexico(object):
             self.tipo = Type.REAL
         elif self.__estado == 5 or self.__estado == 6:
             self.evaluateSignos(self.token)
-        
+
         else:
             self.token += self.__c
             self.tipo = Type.ERROR

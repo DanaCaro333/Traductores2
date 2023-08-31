@@ -2,7 +2,7 @@ import AnalizadorLexico
 import AnalizadorSintactico
 
 prueba = AnalizadorLexico.Lexico()
-prueba.entrada("a23hola 23.54+3+1 while ifif 435 kkola ( interf    ")
+prueba.entrada(open("prueba.txt").read())
 
 print("Resultado del analisis lexico\n\n")
 
@@ -19,4 +19,3 @@ while(prueba.token != "$"):
 
 sintactico = AnalizadorSintactico.Sintactico(entrada)
 sintactico.apilar()
-

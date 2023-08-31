@@ -9,22 +9,17 @@ class Sintactico(object):
         self.__continua = True
         self.__lexico = AnalizadorLexico.Lexico()
         self.__lexico.entrada("a+asd+kgf")
-        self.__tabla = ["d2", "-1", "-1", "1"], ["-1", "-1", "r0", "-1"], ["-1",
-                                                                           "d3", "-1", "-1"], ["d4", "-1", "-1", "-1"], ["-1", "-1", "r1", "-1"]
-
         self.__resultado = resultado
-
-        self._reglas = []
-
+        self.__tabla = []
         self.crearMatriz()
 
     def crearMatriz(self):
         with open("compilador.lr", "r") as file:
-                for line in file:
-                    renglon = []
-                    for dato in line.split():
-                        renglon.append(dato)
-                    self._reglas.append(renglon)
+            for line in file:
+                renglon = []
+                for dato in line.split():
+                    renglon.append(dato)
+                self.__tabla .append(renglon)
 
     def apilar(self):
         self.__pila.push(Epila.T("$"))
@@ -33,12 +28,33 @@ class Sintactico(object):
             self.__pila.muestra()
             x = self.__resultado[0]
 
-            if self.__tabla[int(getattr(self.__pila.top(), "dato"))][x] != "-1":
+            y = int(getattr(self.__pila.top(), "dato"))+54
 
-                ans = self.__tabla[int(getattr(self.__pila.top(), "dato"))][x]
-                self.__pila.push(Epila.EP(self.__resultado[0]))
+            ans = self.__tabla[y][x]
+
+            if int(ans) > 0:
+                self.__pila.push(Epila.EP(ans))
                 self.__resultado.pop(0)
-                self.__pila.push(Epila.EP(ans[len(ans)-1]))
+            elif int(ans) < 0:
+                self.__pila.push(Epila.EP(self.reduccion(int(ans))))
             else:
-                print(self.__resultado[0])
-                self.__resultado.pop(0)
+                print("ERROR")
+
+    def reduccion(self, ans):
+        neutral = (ans * -1)-1
+        index = int(self.__tabla[neutral][0])
+
+        if neutral != 0:
+            reduce = int(self.__tabla[neutral][1])
+
+            while reduce > 0:
+                self.__pila.pop()
+                reduce = reduce - 1
+
+            x = index
+            y = int(getattr(self.__pila.top(), "dato"))+54
+
+            ans = self.__tabla[y][x]
+
+            return ans
+        self.__continua = False
