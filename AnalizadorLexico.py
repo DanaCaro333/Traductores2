@@ -1,3 +1,6 @@
+import Token
+
+
 class Type:
     ERROR = -1
     IDENTIFICADOR = 0
@@ -146,6 +149,9 @@ class Lexico(object):
         elif self.tipo == Type.ERROR:
             cad = "Error en el token"
 
+        elif self.tipo == Type.CADENA:
+            cad = "Cadena"
+
         return cad
 
     def sigtoken(self):
@@ -160,11 +166,14 @@ class Lexico(object):
 
         while(self.__continua):
             self.__c = self.__sigCaracter()
+
             if self.__estado == 0:
                 if self.__esLetra(self.__c):
                     self.__sigEstado(1)
                 elif self.__esDigito(self.__c):
                     self.__sigEstado(3)
+                elif self.__c == '"':
+                    self.__sigEstado(7)
                 else:
                     self.__sigEstado(5)
 
@@ -201,6 +210,14 @@ class Lexico(object):
             elif self.__estado == 6:
                 self.__aceptacion()
 
+            elif self.__estado == 7:
+                if self.__c == '"':
+                    self.__sigEstado(7)
+                    self.__ind = self.__ind+2
+                    self.__aceptacion()
+                else:
+                    self.__sigEstado(7)
+
         if self.token == "$":
             self.tipo = Type.PESOS
         elif self.__estado == 1:
@@ -213,6 +230,8 @@ class Lexico(object):
             self.tipo = Type.REAL
         elif self.__estado == 5 or self.__estado == 6:
             self.evaluateSignos(self.token)
+        elif self.__estado == 7:
+            self.tipo = Type.CADENA
 
         else:
             self.token += self.__c
@@ -268,3 +287,16 @@ class Lexico(object):
 
     def terminado(self):
         return self.__ind >= len(self.__fuente)-1
+
+    def evaluate(self):
+        entrada = []
+
+        while(self.token != "$"):
+            self.sigtoken()
+            aux = Token.Token(self.tipo, self.token)
+            entrada.append(aux)
+            if(self.token != "$"):
+                print(self.token+"\t\t"+self.tipoAcad(self.tipo)+"\n")
+            else:
+                print(self.token+"\t\t"+self.tipoAcad(self.tipo)+"\n")
+        return entrada

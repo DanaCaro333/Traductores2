@@ -1,14 +1,11 @@
 class EP(object):
     def __init__(self, dato) -> None:
         self.dato = dato
+        self.nodo = None
 
 class NT(EP):
-    cad = ""
-    
-    
+    pass
 class T(EP):
-    dato = ""
-    
+    pass
 class E(EP):
-    edo = None
-    
+    pass
