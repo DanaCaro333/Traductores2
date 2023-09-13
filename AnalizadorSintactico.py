@@ -24,12 +24,13 @@ class Sintactico(object):
                 self.__tabla .append(renglon)
 
     def analiza(self):
-        self.__pila.push(Epila.T("$", "$"))
-        self.__pila.push(Epila.E("0"))
+        aux = Epila.E("0")
+        self.__pila.push(Epila.T("$", "$", aux))
+        self.__pila.push(aux)
 
         while len(self.__resultado) > 0 and self.__continua:
-            self.analisisRecursivo();
-            
+            self.analisisRecursivo()
+
     def analisisRecursivo(self):
         self.__pila.muestra()
 
@@ -37,11 +38,12 @@ class Sintactico(object):
         y = int(getattr(self.__pila.top(), "type"))+54
 
         ans = int(self.__tabla[y][x])
-        
+
         if ans > 0:
+            aux = Epila.E(ans)
             self.__pila.push(Epila.T(
-            getattr(self.__resultado[0], "type"), getattr(self.__resultado[0], "data")))
-            self.__pila.push(Epila.E(ans))
+                getattr(self.__resultado[0], "type"), getattr(self.__resultado[0], "data"), aux))
+            self.__pila.push(aux)
             self.__resultado.pop(0)
         elif ans < 0:
             neutral = (ans * -1)-1
@@ -51,16 +53,18 @@ class Sintactico(object):
             self.__pila.push(Epila.E(self.reduccion(ans)))
         else:
             print("ERROR")
-    
-            
+
     def reduccion(self, ans):
         neutral = (ans * -1)-1
 
         if neutral != 0:
             tipo = self.__tabla[neutral][2]
+
+            aux = Epila.NT(tipo)
             reduce = int(self.__tabla[neutral][1]) * 2
 
             while reduce > 0:
+                aux.nodo.__setattr__("sig", aux.nodo.sig)
                 self.__pila.pop()
                 reduce = reduce - 1
 
@@ -68,7 +72,7 @@ class Sintactico(object):
             y = int(getattr(self.__pila.top(), "type"))+54
 
             ans = self.__tabla[y][x]
-            
+
             self.__pila.push(Epila.NT(tipo))
             return ans
         self.__continua = False
