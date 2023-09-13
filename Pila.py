@@ -15,6 +15,9 @@ class Pila(object):
         return self.__lista[len(self.__lista)-1]
 
     def muestra(self):
-        for _ in self.__lista:
-            print(getattr(_, "dato"), end="")
+        for x in self.__lista:
+            if isinstance(x, Epila.T):
+                print(getattr(x, "data"), end="")
+            else:
+                print(getattr(x, "type"), end="")
         print(" ")

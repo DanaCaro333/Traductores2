@@ -1,7 +1,8 @@
 import AnalizadorLexico
 import Pila
 import Epila
-import ArbolSintactico
+#import ArbolSintactico
+
 
 class Sintactico(object):
     def __init__(self, resultado) -> None:
@@ -12,7 +13,7 @@ class Sintactico(object):
         self.__resultado = resultado
         self.__tabla = []
         self.crearMatriz()
-        self.arbolS = ArbolSintactico.Nodo()
+        #self.arbolS = ArbolSintactico.Nodo()
 
     def crearMatriz(self):
         with open("compilador.lr", "r") as file:
@@ -23,45 +24,55 @@ class Sintactico(object):
                 self.__tabla .append(renglon)
 
     def analiza(self):
-        self.__pila.push(Epila.T("$"))
+        self.__pila.push(Epila.T("$", "$"))
         self.__pila.push(Epila.E("0"))
 
         while len(self.__resultado) > 0 and self.__continua:
-            self.__pila.muestra()
-            x = int(getattr(self.__resultado[0], "type"))
-            y = int(getattr(self.__pila.top(), "dato"))+54
+            self.analisisRecursivo();
+            
+    def analisisRecursivo(self):
+        self.__pila.muestra()
 
-            ans = int(self.__tabla[y][x])
+        x = int(getattr(self.__resultado[0], "type"))
+        y = int(getattr(self.__pila.top(), "type"))+54
 
-            if ans > 0:
-                self.__pila.push(Epila.T(ans))
-                self.__resultado.pop(0)
-            elif ans < 0:
-                neutral = (ans * -1)-1
-                if neutral > 0:
-                    nt = self.__tabla[neutral][2]
-                    print("------------" + nt + "------------")
-                self.__pila.push(Epila.NT(self.reduccion(ans)))
-            else:
-                print("ERROR")
-
+        ans = int(self.__tabla[y][x])
+        
+        if ans > 0:
+            self.__pila.push(Epila.T(
+            getattr(self.__resultado[0], "type"), getattr(self.__resultado[0], "data")))
+            self.__pila.push(Epila.E(ans))
+            self.__resultado.pop(0)
+        elif ans < 0:
+            neutral = (ans * -1)-1
+            if neutral > 0:
+                nt = self.__tabla[neutral][2]
+                print("------------" + nt + "------------")
+            self.__pila.push(Epila.E(self.reduccion(ans)))
+        else:
+            print("ERROR")
+    
+            
     def reduccion(self, ans):
         neutral = (ans * -1)-1
-        tipo = self.__tabla[neutral][2]
+
         if neutral != 0:
-            reduce = int(self.__tabla[neutral][1])
+            tipo = self.__tabla[neutral][2]
+            reduce = int(self.__tabla[neutral][1]) * 2
 
             while reduce > 0:
                 self.__pila.pop()
                 reduce = reduce - 1
 
-            x = index
-            y = int(getattr(self.__pila.top(), "dato"))+54
+            x = int(self.__tabla[neutral][0])
+            y = int(getattr(self.__pila.top(), "type"))+54
 
             ans = self.__tabla[y][x]
-
+            
+            self.__pila.push(Epila.NT(tipo))
             return ans
         self.__continua = False
-    
+
     def crearNodo(self, tipo):
-        if tipo == 1
+        if tipo == "Parametros":
+            return
