@@ -4,11 +4,13 @@ import ArbolSintactico
 class EP(object):
     def __init__(self, type) -> None:
         self.type = type
-        
 
 
 class NT(EP):
-    pass
+    def __init__(self, type, nodo) -> None:
+        self.type = type
+        self.nodo = nodo
+
 
 class T(EP):
     def __init__(self, type, data, sig) -> None:
@@ -33,6 +35,7 @@ class T(EP):
 
 class E(EP):
     pass
+
 
 class EN(EP):
     def __init__(self, type, nodo) -> None:

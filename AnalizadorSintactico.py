@@ -46,11 +46,12 @@ class Sintactico(object):
         elif ans < 0:
             neutral = (ans * -1)-1
             if neutral > 0:
-                # self.arbolS.create(neutral)
                 nt = self.__tabla[neutral][2]
                 print("------------" + nt + "------------")
-                aux = Epila.EN(nt, self.reduccion(ans))
-            self.__pila.push(Epila.EN(nt, self.reduccion(ans)))
+                ans = self.reduccion(ans)
+                self.__pila.push(Epila.E(ans))
+            else:
+                self.__continua = False
         else:
             print("ERROR")
 
@@ -60,7 +61,6 @@ class Sintactico(object):
         if neutral != 0:
             tipo = self.__tabla[neutral][2]
 
-            aux = Epila.NT(tipo)
             auxData = []
             reduce = int(self.__tabla[neutral][1]) * 2
 
@@ -73,12 +73,11 @@ class Sintactico(object):
             x = int(self.__tabla[neutral][0])
             y = int(getattr(self.__pila.top(), "type"))+54
 
-            self.__pila.topS
-            push(self.createBranch(neutral, auxData))
+            self.__pila.push(
+                Epila.NT(tipo, self.createBranch(neutral, auxData)))
             ans = self.__tabla[y][x]
 
             return ans
-        self.__continua = False
 
     def createBranch(self, ans, auxData):
         if ans == 1:
