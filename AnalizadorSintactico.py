@@ -1,8 +1,7 @@
 import AnalizadorLexico
 import Pila
 import Epila
-#import ArbolSintactico
-
+import ArbolSintactico
 
 class Sintactico(object):
     def __init__(self, resultado) -> None:
@@ -13,7 +12,7 @@ class Sintactico(object):
         self.__resultado = resultado
         self.__tabla = []
         self.crearMatriz()
-        #self.arbolS = ArbolSintactico.Nodo()
+        self.arbolS = ArbolSintactico.Nodo()
 
     def crearMatriz(self):
         with open("compilador.lr", "r") as file:
@@ -48,6 +47,7 @@ class Sintactico(object):
         elif ans < 0:
             neutral = (ans * -1)-1
             if neutral > 0:
+                # self.arbolS.create(neutral)
                 nt = self.__tabla[neutral][2]
                 print("------------" + nt + "------------")
             self.__pila.push(Epila.E(self.reduccion(ans)))
@@ -61,22 +61,25 @@ class Sintactico(object):
             tipo = self.__tabla[neutral][2]
 
             aux = Epila.NT(tipo)
+            auxData = []
             reduce = int(self.__tabla[neutral][1]) * 2
 
             while reduce > 0:
-                aux.nodo.__setattr__("sig", aux.nodo.sig)
+                if(isinstance(self.__pila.top(), Epila.T) or isinstance(self.__pila.top(), Epila.NT)):
+                    auxData.append(self.__pila.top())
                 self.__pila.pop()
                 reduce = reduce - 1
 
             x = int(self.__tabla[neutral][0])
             y = int(getattr(self.__pila.top(), "type"))+54
-
+            
+            createBranch(x);
+            
             ans = self.__tabla[y][x]
 
             self.__pila.push(Epila.NT(tipo))
             return ans
         self.__continua = False
 
-    def crearNodo(self, tipo):
-        if tipo == "Parametros":
-            return
+def createBranch(self, tipo):
+    if(tipo == )

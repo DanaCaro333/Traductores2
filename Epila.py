@@ -25,10 +25,6 @@ class T(EP):
             self.nodo = ArbolSintactico.Cadena(data, sig)
         elif type == 4:
             self.nodo = ArbolSintactico.Tipo(data)
-        elif type == 5:
-            self.nodo = ArbolSintactico.Suma(data, None, None)
-        elif type == 6:
-            self.nodo = ArbolSintactico.Mult(data, None, None)
         elif type in range(7, 18):
             self.nodo = ArbolSintactico.Signo(data, sig)
         else:
