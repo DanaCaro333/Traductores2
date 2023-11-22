@@ -1,4 +1,8 @@
 int main(){
     int dana, pepe, teo;
     teo = dana + pepe;
+    float teo;
+}
+float hola(){
+    int yo;
 }

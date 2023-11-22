@@ -12,6 +12,7 @@ class Sintactico(object):
         self.__resultado = resultado
         self.__token_table = []
         self.__tabla = []
+        self._tipoTemp = None
         self.crearMatriz()
         self.arbolS = ArbolSintactico.Nodo()
 
@@ -37,7 +38,7 @@ class Sintactico(object):
             self.analisisRecursivo()
 
     def analisisRecursivo(self):
-        self.__pila.muestra()
+       # self.__pila.muestra()
 
         x = int(getattr(self.__resultado[0], "type"))
         y = int(getattr(self.__pila.top(), "type"))+54
@@ -49,6 +50,8 @@ class Sintactico(object):
             self.__pila.push(Epila.T(
                 getattr(self.__resultado[0], "type"), getattr(self.__resultado[0], "data"), aux))
             self.__pila.push(aux)
+            if(self.__resultado[0].type == 4):
+                self._tipoTemp = self.__resultado[0].data
             self.__resultado.pop(0)
         elif ans < 0:
             neutral = (ans * -1)-1
@@ -98,24 +101,28 @@ class Sintactico(object):
         elif ans == 5:
             aux = ArbolSintactico.R5(auxData[0])
         elif ans == 6:
-            self.addTokenTable(auxData[3], auxData[2])
+            self.addTokenTable(auxData[3].type, auxData[2].data)
             aux = ArbolSintactico.R6(
                 auxData[3], auxData[2], auxData[1], auxData[0])
 
         elif ans == 7:
             aux = ArbolSintactico.R7()
         elif ans == 8:
+            self.addTokenTable(self._tipoTemp, auxData[1].data)
             aux = ArbolSintactico.R8(auxData[2], auxData[1], auxData[0])
         elif ans == 9:
+            self.addTokenTable(auxData[5].type, auxData[4].data)
             aux = ArbolSintactico.R9(
                 auxData[5], auxData[4], auxData[3], auxData[2], auxData[1], auxData[0])
         elif ans == 10:
             aux = ArbolSintactico.R10()
         elif ans == 11:
+            self.addTokenTable(auxData[2].type, auxData[1].data)
             aux = ArbolSintactico.R11(auxData[2], auxData[1], auxData[0])
         elif ans == 12:
             aux = ArbolSintactico.R12()
         elif ans == 13:
+            self.addTokenTable(auxData[2].type, auxData[1].data)
             aux = ArbolSintactico.R13(
                 auxData[3], auxData[2], auxData[1], auxData[0])
         elif ans == 14:
@@ -133,6 +140,7 @@ class Sintactico(object):
         elif ans == 20:
             aux = ArbolSintactico.R20(auxData[1], auxData[0])
         elif ans == 21:
+            self.checkTokenTable(auxData[3].data)
             aux = ArbolSintactico.R21(
                 auxData[3], auxData[2], auxData[1], auxData[0])
         elif ans == 22:
@@ -166,6 +174,7 @@ class Sintactico(object):
         elif ans == 35:
             aux = ArbolSintactico.R35(auxData[0])
         elif ans == 36:
+            self.checkTokenTable(auxData[0].data)
             aux = ArbolSintactico.R36(auxData[0])
         elif ans == 37:
             aux = ArbolSintactico.R37(auxData[0])
@@ -174,6 +183,7 @@ class Sintactico(object):
         elif ans == 39:
             aux = ArbolSintactico.R39(auxData[0])
         elif ans == 40:
+            self.checkTokenTable(auxData[3].data)
             aux = ArbolSintactico.R40(
                 auxData[3], auxData[2], auxData[1], auxData[0])
         elif ans == 41:
@@ -209,6 +219,7 @@ class Sintactico(object):
             if name == self.__token_table[i].nombre:
                 print("ERROR la variable YA se encuentra declarada")
                 return False
+            i = i + 1
         aux = self.token(tipo, name)
         self.__token_table.append(aux)
 
@@ -217,4 +228,5 @@ class Sintactico(object):
         while i < len(self.__token_table):
             if name == self.__token_table[i].nombre:
                 return True
+            i = i + 1
         print("ERROR la variable no se encuentra declarada")
