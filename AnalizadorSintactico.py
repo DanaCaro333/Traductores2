@@ -5,13 +5,20 @@ import ArbolSintactico
 
 
 class Sintactico(object):
+
     def __init__(self, resultado) -> None:
         self.__pila = Pila.Pila()
         self.__continua = True
         self.__resultado = resultado
+        self.__token_table = []
         self.__tabla = []
         self.crearMatriz()
         self.arbolS = ArbolSintactico.Nodo()
+
+    class token(object):
+        def __init__(self, tipo, nombre) -> None:
+            self.tipo = tipo
+            self.nombre = nombre
 
     def crearMatriz(self):
         with open("compilador.lr", "r") as file:
@@ -91,12 +98,14 @@ class Sintactico(object):
         elif ans == 5:
             aux = ArbolSintactico.R5(auxData[0])
         elif ans == 6:
+            self.addTokenTable(auxData[3], auxData[2])
             aux = ArbolSintactico.R6(
                 auxData[3], auxData[2], auxData[1], auxData[0])
+
         elif ans == 7:
             aux = ArbolSintactico.R7()
         elif ans == 8:
-            aux = ArbolSintactico.R8(auxData[2], auxData[1], C)
+            aux = ArbolSintactico.R8(auxData[2], auxData[1], auxData[0])
         elif ans == 9:
             aux = ArbolSintactico.R9(
                 auxData[5], auxData[4], auxData[3], auxData[2], auxData[1], auxData[0])
@@ -193,3 +202,19 @@ class Sintactico(object):
             aux = ArbolSintactico.R52(auxData[0])
 
         return aux
+
+    def addTokenTable(self, tipo, name):
+        i = 0
+        while i < len(self.__token_table):
+            if name == self.__token_table[i].nombre:
+                print("ERROR la variable YA se encuentra declarada")
+                return False
+        aux = self.token(tipo, name)
+        self.__token_table.append(aux)
+
+    def checkTokenTable(self, name):
+        i = 0
+        while i < len(self.__token_table):
+            if name == self.__token_table[i].nombre:
+                return True
+        print("ERROR la variable no se encuentra declarada")

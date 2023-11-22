@@ -1,6 +1,7 @@
 class Nodo(object):
     def __init__(self) -> None:
         self.der = None
+        
 
 
 class R1(Nodo):

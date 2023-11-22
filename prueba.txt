@@ -1,2 +1,4 @@
 int main(){
+    int dana, pepe, teo;
+    teo = dana + pepe;
 }
