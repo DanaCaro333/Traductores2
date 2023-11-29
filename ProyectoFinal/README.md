@@ -1,0 +1,1 @@
+Proyecto Terminado, generacion de codigo en ensamblador en el lenguaje nasm, ejecutar de preferencia en sistema operaivo linux o al menos comprobar el codigo asm ahi, el ensamblador no esta diseñado para ser ejecutado en windows pero se puede adaptar.
