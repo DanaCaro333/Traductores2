@@ -1,1 +1,5 @@
-Proyecto Terminado, generacion de codigo en ensamblador en el lenguaje nasm, ejecutar de preferencia en sistema operaivo linux o al menos comprobar el codigo asm ahi, el ensamblador no esta diseñado para ser ejecutado en windows pero se puede adaptar.
+Proyecto Final 28/11/23 
+Dana Carolina Ramirez Velazquez 220286547
+Un traductor que recibe como entrada código escrito en un cierto lenguaje y produce como salida código en ensamblador.
+Este proyecto fue creado con phyton y el codigo de ensamblador generado fue ejecutado con nasm.
+
